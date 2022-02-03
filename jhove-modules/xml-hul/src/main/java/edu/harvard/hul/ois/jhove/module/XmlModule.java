@@ -197,14 +197,15 @@ public class XmlModule extends ModuleBase {
 	@Override
 	public void param(String param) {
 		if (param != null) {
-			param = param.toLowerCase();
 			if (param.startsWith("schema=")) {
 				addLocalSchema(param);
-			} else if (param.indexOf('s') == 0) {
-				_sigWantsDecl = true;
-				param = param.substring(1);
-			} else if (param.indexOf('b') == 0) {
-				_baseURL = param.substring(1);
+			} else {
+				param = param.toLowerCase();
+				if (param.indexOf('s') == 0) {
+					_sigWantsDecl = true;
+				} else if (param.indexOf('b') == 0) {
+					_baseURL = param.substring(1);
+				}
 			}
 		}
 	}
