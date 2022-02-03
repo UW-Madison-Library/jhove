@@ -333,34 +333,36 @@ public class XmlModuleHandler extends DefaultHandler {
 			throws SAXException
 
 	{
+		InputSource ent = null;
+
 		// Check any custom mapping from the config
 		URI uri = _localSchemas.get(systemId.toLowerCase());
 		if (uri != null) {
 			try {
-				return new InputSource(openUri(uri));
+				ent = new InputSource(openUri(uri));
 			} catch (IOException e) {
 			}
 		}
 
-		// Do special-case checking for the XHTML DTD's
-		if (!_xhtmlFlag && DTDMapper.isXHTMLDTD(publicId)) {
-                    _xhtmlFlag = true;
-		}
-		InputSource ent = DTDMapper.publicIDToFile(publicId);
 		if (ent == null) {
-			try {
-				ent = new InputSource(openUri(URI.create(systemId)));
-			} catch (Exception e) {
-				// Depending on the JDK version, super.resolveEntity
-				// may or may not be formally capable of throwing an
-				// IOException.
-				// This hack allows compatibility in either case.
-				throw new SAXException(e);
+			// Do special-case checking for the XHTML DTD's
+			if (!_xhtmlFlag && DTDMapper.isXHTMLDTD(publicId)) {
+				_xhtmlFlag = true;
 			}
-		} else {
-			// A little magic so SAX won't give up in advance on
-			// relative URI's.
-			ent.setSystemId("http://hul.harvard.edu/hul");
+
+			ent = DTDMapper.publicIDToFile(publicId);
+
+			if (ent == null) {
+				try {
+					ent = new InputSource(openUri(URI.create(systemId)));
+				} catch (Exception e) {
+					// Depending on the JDK version, super.resolveEntity
+					// may or may not be formally capable of throwing an
+					// IOException.
+					// This hack allows compatibility in either case.
+					throw new SAXException(e);
+				}
+			}
 		}
 
 		// Report in entity properties
@@ -368,13 +370,19 @@ public class XmlModuleHandler extends DefaultHandler {
 		entArr.publicID = publicId;
 		entArr.systemID = systemId;
 		_entities.add(entArr);
-                /*
-                 * Assume that the first system ID in the file with a .dtd
-                 * extension is the actual DTD
-                 */
+
+		/*
+		 * Assume that the first system ID in the file with a .dtd
+		 * extension is the actual DTD
+		 */
 		if (systemId.endsWith(".dtd") && _dtdURI == null) {
-                    _dtdURI = systemId;
+			_dtdURI = systemId;
 		}
+
+		// These values MUST be set so that any relative entities that they reference can be resolved
+		ent.setPublicId(publicId);
+		ent.setSystemId(systemId);
+
 		return ent;
 	}
 

@@ -25,21 +25,9 @@ public class DTDMapper {
     private final static String xhtml1Strict = "-//W3C//DTD XHTML 1.0 STRICT//EN";
     private final static String xhtml1Transitional = "-//W3C//DTD XHTML 1.0 TRANSITIONAL//EN";
     private final static String xhtml11 = "-//W3C//DTD XHTML 1.1//EN";
-
-    private final static String xmlSchema10 = "-//W3C//DTD XMLSCHEMA 200102//EN";
-    private final static String xmlSchemaDatatypes10 = "DATATYPES";
-    private final static String xmlSchema11 = "-//W3C//DTD XSD 1.1//EN";
-    private final static String xmlSchemaDatatypes11 = "-//W3C//DTD XSD 1.1 Datatypes//EN";
-
     private final static String latin1Ent = "-//W3C//ENTITIES LATIN 1 FOR XHTML//EN";
     private final static String specialEnt = "-//W3C//ENTITIES SPECIAL FOR XHTML//EN";
     private final static String symbolEnt = "-//W3C//ENTITIES SYMBOLS FOR XHTML//EN";
-
-    private final static String xmlDtdLocation = "edu/harvard/hul/ois/jhove/module/xml/";
-    private final static String xmlSchema10DtdLocation = xmlDtdLocation + "XMLSchema-1.0.dtd";
-    private final static String xmlSchemaDatatypes10DtdLocation = xmlDtdLocation + "XMLSchema-datatypes-1.0.dtd";
-    private final static String xmlSchema11DtdLocation = xmlDtdLocation + "XMLSchema-1.1.dtd";
-    private final static String xmlSchemaDatatypes11DtdLocation = xmlDtdLocation + "XMLSchema-datatypes-1.1.dtd";
 
     /** Attempts to convert a public ID to a matching DTD or Entity resource.
      *  Returns an InputStream for that resource if there is a match.  
@@ -75,14 +63,6 @@ public class DTDMapper {
         }
         else if (symbolEnt.equals (publicID)) {
             filename = "xhtml-symbol.ent";
-        } else if (xmlSchema10.equals(publicID)) {
-            filename = xmlSchema10DtdLocation;
-        } else if (xmlSchemaDatatypes10.equals(publicID)) {
-            filename = xmlSchemaDatatypes10DtdLocation;
-        } else if (xmlSchema11.equals(publicID)) {
-            filename = xmlSchema11DtdLocation;
-        } else if (xmlSchemaDatatypes11.equals(publicID)) {
-            filename = xmlSchemaDatatypes11DtdLocation;
         }
         if (filename != null) {
             ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -99,8 +79,7 @@ public class DTDMapper {
         }
         return null;
     }
-    
-    
+
     /** Returns TRUE if the parameter is the public ID of a
      *  known XHTML DTD. */
     public static boolean isXHTMLDTD (String publicID) 
@@ -114,7 +93,7 @@ public class DTDMapper {
                 xhtml1Transitional.equals (publicID) ||
                 xhtml11.equals (publicID));
     }
-    
+
     /** Returns the XHTML version associated with the DTD's 
      *  public ID.  Returns <code>null</code> if it isn't
      *  a known XHTML public ID. */
